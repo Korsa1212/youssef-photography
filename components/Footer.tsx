@@ -35,6 +35,14 @@ export default function Footer() {
           >
             WhatsApp
           </a>
+          <a
+            href="https://www.instagram.com/youssef.production"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-zinc-500 transition-colors hover:text-zinc-900"
+          >
+            Instagram
+          </a>
         </div>
         <div className="text-[15px]">
           <p className="mb-3 font-semibold text-zinc-900">Localisation</p>
