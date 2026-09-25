@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 import { SITE_NAME, SITE_URL, SITE_DESCRIPTION } from "@/lib/seo";
 import "./globals.css";
 
@@ -20,6 +21,8 @@ const playfair = Playfair_Display({
   subsets: ["latin"],
   weight: ["500", "600", "700"],
 });
+
+const siteVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -46,6 +49,7 @@ export const metadata: Metadata = {
     title: "Youssef Production — Photographe & Vidéaste à Marrakech",
     description: SITE_DESCRIPTION,
   },
+  ...(siteVerification && { verification: { google: siteVerification } }),
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -55,6 +59,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-white font-sans text-zinc-900">
+        <GoogleAnalytics />
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
