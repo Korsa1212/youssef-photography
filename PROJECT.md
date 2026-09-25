@@ -38,18 +38,25 @@ First client: **Youssef**, photography business. He wants:
 - **Repo**: `https://github.com/Korsa1212/youssef-photography` (branch `main`)
 - **Domain (bought)**: `youssefproduction.com` — connect at Vercel deploy time, NOT now
 - **Agent rules**: `AGENTS.md` in repo root — READ IT (Next.js 16 has breaking changes; docs at `node_modules/next/dist/docs/`)
-- Runtime secrets needed (`.env.local`): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- Runtime secrets needed (`.env.local`): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 
 ---
 
-## 4. Current status (as of last session)
+## 4. Current status (as of Phase 3 completion)
 
-- ✅ Next.js project scaffolded locally (`app/`, tailwind, eslint, tsconfig...)
-- ✅ Git repo created + pushed (`Initial commit` on GitHub has only README/LICENSE/.gitignore)
-- ⚠️ **Most Next.js files are UNCOMMITTED** (untracked: `app/`, `package.json`, etc.)
-- ❌ Supabase NOT installed yet, no `.env.local`
-- ❌ No admin, no pages built, no deploy
-- Phase 2 was approved to start — **then user asked for this memory file**
+- ✅ Next.js 16 + TypeScript + Tailwind scaffolded
+- ✅ Git repo `Korsa1212/youssef-photography` pushed to `main`
+- ✅ Supabase project `Youssef_photography` created, env in `.env.local`
+- ✅ `works` + `reviews` tables + RLS created (Phase 2)
+- ✅ Phase 3 code COMPLETE — lint + `next build` pass:
+  - Public: homepage (hero, stats, services, works grid, reviews), portfolio with filters, work detail + review form
+  - Admin: `/admin/login` + `/admin` dashboard (CRUD works, image upload to Storage bucket `works`, review approve/refuse)
+  - `proxy.ts` auth guard (Next 16 renamed middleware)
+- ⚠️ **PENDING user actions**:
+  1. Re-run `supabase/schema.sql` (adds Storage bucket, `location`+`event_date` columns, `posts` + `faqs` tables — safe to re-run)
+  2. Create admin user in Supabase: Authentication → Users → Add user (email `baghzaoui1@gmail.com`, set a password)
+  3. Test with `npm run dev` → `/admin`
+- ⚠️ Phase 3 + 3.5 changes NOT committed yet
 
 ---
 
@@ -58,26 +65,29 @@ First client: **Youssef**, photography business. He wants:
 ### Phase 1 — Setup (DONE)
 - Create GitHub repo, clone, scaffold Next.js, first commit (mostly done)
 
-### Phase 2 — Supabase + Database (NEXT)
-1. `npm install @supabase/supabase-js`
-2. User creates free project at `supabase.com` → gives URL + anon key
-3. Put keys in `.env.local` (gitignored)
-4. Create schema in Supabase SQL editor:
+### Phase 2 — Supabase + Database (DONE)
+- ✅ Installed `@supabase/supabase-js` + `@supabase/ssr`
+- ✅ `.env.local` with URL + publishable key (gitignored)
+- ✅ `works` + `reviews` tables, RLS, indexes, Storage bucket `works`
+- ✅ Client helpers: `lib/supabase/client.ts`, `server.ts`, `reader.ts`
+- ✅ Schema + helpers committed + pushed (`579ff5d`)
 
-**`works` table**
-- `id` (uuid, pk), `title`, `description`, `category`, `image_urls` (array), `created_at`
+### Phase 3 — Build pages (DONE — code written)
+- ✅ Public: Home (LocalBusiness schema), Portfolio (filters), work detail (CreativeWork schema + review form)
+- ✅ Review insert = unapproved (spam-hidden until admin approves)
+- ✅ Admin: login, dashboard — add/delete works, upload images, approve/refuse reviews
+- ✅ `proxy.ts` guard for `/admin`
+- ✅ Public reads via cookie-free `reader.ts` → static cache; homepage ISR 5m
+- ⏳ Awaiting: re-run schema.sql, create admin user, user test
 
-**`reviews` table**
-- `id` (uuid, pk), `work_id` (fk → works), `name`, `rating` (1–5), `feedback`, `approved` (bool), `created_at`
-
-5. Security rules: public can READ works + approved reviews; only ADMIN can add/delete works
-6. Admin auth (password-protected) so only Youssef can add/delete works
-7. First commit + push
-
-### Phase 3 — Build pages
-- Public: Home, Portfolio gallery (categories/filters), single work page, reviews display + form
-- Admin dashboard: add/delete works (admin only)
-- Same name/phone/location everywhere for Google trust
+### Phase 3.5 — Content pages + rich UI (DONE — code written)
+- ✅ `/a-propos` — about page (story, gear, process 1-2-3, CTA)
+- ✅ Richer works: DB columns `location` + `event_date`, admin form fields, shown on work page
+- ✅ `/faq` — accordion FAQ, admin-managed (FaqManager)
+- ✅ `/blog` + `/blog/[slug]` — blog/guides, admin-managed (PostsManager; slug auto-generated, cover image upload)
+- ✅ Header redesigned (bigger, h-20, more nav, mobile menu), hero taller + richer (chips + info bar)
+- ✅ Skeleton resilience: public pages show "coming soon" until schema applied (build passes without tables)
+- ⏳ PENDING: **re-run `supabase/schema.sql`** (adds location/event_date columns + `posts` + `faqs` tables)
 
 ### Phase 4 — SEO / Google
 - Schema.org JSON-LD **in the real pages** (homepage + work pages) → star rating in Google search
@@ -105,6 +115,21 @@ First client: **Youssef**, photography business. He wants:
 
 ---
 
+## 6b. Client business info (from Instagram)
+
+- **Business name**: Youssef Production / Youssef Photographe
+- **Services**: Photo-Video — Mariage / Fiançailles / Events — "CRÉATEUR DE SOUVENIRS"
+- **Phone**: +212 696 819 328
+- **Email**: baghzaoui1@gmail.com
+- **WhatsApp**: wa.me/212...
+- **Location**: MARRAKECH / Kalaa des Sraghna
+- **Instagram**: @youssef.production
+- **UI preference**: light professional UI
+
+Gallery filter categories: **Mariage / Fiançailles / Events**
+
+---
+
 ## 7. Questions to ask the client (Google Business Profile)
 
 1. Exact business name on profile?
@@ -121,5 +146,5 @@ First client: **Youssef**, photography business. He wants:
 
 1. Read this file + `AGENTS.md`
 2. Read `package.json`, `app/`, and check `git status` + `git log`
-3. Confirm current phase (Phase 2 next)
+3. Confirm current phase (Phase 4 — SEO/Google, after Phase 3 user-actions complete)
 4. Continue where left off — do not re-plan from scratch
