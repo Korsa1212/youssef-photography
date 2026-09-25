@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { absoluteUrl } from "@/lib/seo";
 import { getPostBySlug } from "@/lib/supabase/queries";
 
 export const revalidate = 300;
@@ -17,6 +18,17 @@ export async function generateMetadata({
   return {
     title: post.title,
     description: post.excerpt ?? undefined,
+    alternates: { canonical: `/blog/${post.slug}` },
+    openGraph: {
+      type: "article",
+      title: `${post.title} — Youssef Production`,
+      description: post.excerpt ?? undefined,
+      url: `/blog/${post.slug}`,
+      publishedTime: post.created_at,
+      images: post.cover_image
+        ? [{ url: absoluteUrl(post.cover_image), alt: post.title }]
+        : [],
+    },
   };
 }
 
@@ -34,8 +46,29 @@ export default async function PostPage({
     .map((p) => p.trim())
     .filter(Boolean);
 
+  const articleLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    description: post.excerpt ?? undefined,
+    image: post.cover_image ? absoluteUrl(post.cover_image) : undefined,
+    datePublished: post.created_at,
+    author: {
+      "@type": "Person",
+      name: "Youssef Production",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Youssef Production",
+    },
+  };
+
   return (
     <div className="bg-white px-6 py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd) }}
+      />
       <div className="mx-auto max-w-3xl">
         <Link
           href="/blog"

@@ -4,9 +4,16 @@ import Link from "next/link";
 import { getPublishedPosts } from "@/lib/supabase/queries";
 
 export const metadata: Metadata = {
-  title: "Blog & Guides",
+  title: "Blog & guides photo — conseils mariage & fiançailles",
   description:
-    "Guides pratiques, conseils photo et inspirations de Youssef Production, photographe à Marrakech.",
+    "Guides pratiques, idées d'organisation et conseils photo de Youssef Production, photographe à Marrakech : mariage, fiançailles, événements.",
+  alternates: { canonical: "/blog" },
+  openGraph: {
+    title: "Blog & guides photo — Youssef Production",
+    description:
+      "Conseils pratiques pour réussir vos photos de mariage et fiançailles à Marrakech.",
+    url: "/blog",
+  },
 };
 
 export const revalidate = 300;

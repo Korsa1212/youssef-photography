@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import type { Metadata } from "next";
 import Stars from "@/components/Stars";
 import WorkCard from "@/components/WorkCard";
 import {
@@ -17,6 +18,20 @@ const bg = (id: string, w = 1200) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=75`;
 
 const HERO_IMAGE = bg("photo-1522673607200-164d1b6ce486", 2000);
+
+export const metadata: Metadata = {
+  title: "Photographe & Vidéaste à Marrakech — Mariage, fiançailles, événements",
+  description:
+    "Youssef Production, photographe et vidéaste à Marrakech. Reportages mariage, séances fiançailles et événements. Devis gratuit, galerie livrée en quelques jours.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "Youssef Production — Photographe & Vidéaste à Marrakech",
+    description:
+      "Mariage, fiançailles, événements à Marrakech : des souvenirs authentiques capturés avec soin.",
+    url: "/",
+    images: [{ url: HERO_IMAGE, width: 1600, height: 2000, alt: "Youssef Production — Photographe à Marrakech" }],
+  },
+};
 
 const SERVICES = [
   {
@@ -58,7 +73,9 @@ export default async function Home() {
     url: "https://youssefproduction.com",
     telephone: "+212696819328",
     email: "baghzaoui1@gmail.com",
-    image: heroImage,
+    image: heroImage ?? HERO_IMAGE,
+    priceRange: "€€",
+    areaServed: "Marrakech et ses environs, Maroc",
     address: {
       "@type": "PostalAddress",
       addressLocality: "Marrakech",
@@ -257,7 +274,7 @@ export default async function Home() {
             </p>
           ) : (
             <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {works.slice(0, 6).map((work) => (
+              {works.slice(0, 3).map((work) => (
                 <WorkCard key={work.id} work={work} rating={ratings[work.id]} />
               ))}
             </div>
@@ -316,8 +333,8 @@ export default async function Home() {
               </div>
 
               {/* Review cards */}
-              <div className="grid gap-6 sm:grid-cols-2 lg:col-span-2">
-                {reviews.slice(0, 4).map((r) => (
+              <div className="space-y-6 lg:col-span-2">
+                {reviews.slice(0, 3).map((r) => (
                   <div
                     key={r.id}
                     className="flex flex-col rounded-3xl border border-white/15 bg-white/10 p-7 backdrop-blur-md"

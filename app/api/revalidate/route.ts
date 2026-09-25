@@ -17,6 +17,7 @@ export async function POST() {
   revalidatePath("/blog", "page");
   revalidatePath("/blog/[slug]", "page");
   revalidatePath("/faq", "page");
+  revalidatePath("/sitemap.xml", "page");
 
   return NextResponse.json({ revalidated: true });
 }

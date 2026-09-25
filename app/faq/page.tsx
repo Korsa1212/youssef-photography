@@ -3,9 +3,16 @@ import Link from "next/link";
 import { getPublishedFaqs } from "@/lib/supabase/queries";
 
 export const metadata: Metadata = {
-  title: "FAQ",
+  title: "FAQ — tarifs, délais & réservation",
   description:
     "Questions fréquentes sur Youssef Production, photographe à Marrakech : tarifs, prestations, délais de livraison et réservation.",
+  alternates: { canonical: "/faq" },
+  openGraph: {
+    title: "FAQ — Youssef Production",
+    description:
+      "Tarifs, prestations, délais de livraison et réservation : les réponses à vos questions.",
+    url: "/faq",
+  },
 };
 
 export const revalidate = 300;
@@ -13,8 +20,27 @@ export const revalidate = 300;
 export default async function FaqPage() {
   const faqs = await getPublishedFaqs();
 
+  const faqLd =
+    faqs.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqs.map((f) => ({
+            "@type": "Question",
+            name: f.question,
+            acceptedAnswer: { "@type": "Answer", text: f.answer },
+          })),
+        }
+      : null;
+
   return (
     <div className="bg-white px-6 py-20">
+      {faqLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
+        />
+      )}
       <div className="mx-auto max-w-3xl">
         <p className="text-center text-xs uppercase tracking-[0.35em] text-zinc-400">
           FAQ

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import Stars from "@/components/Stars";
 import ReviewForm from "@/components/ReviewForm";
 import PhotoSlider from "@/components/PhotoSlider";
+import { absoluteUrl } from "@/lib/seo";
 import {
   getWork,
   getApprovedReviews,
@@ -23,7 +24,18 @@ export async function generateMetadata({
   if (!work) return { title: "Travail introuvable" };
   return {
     title: work.title,
-    description: work.description ?? undefined,
+    description:
+      work.description ??
+      `${work.category} à ${work.location ?? "Marrakech"} — Youssef Production, photographe vidéaste.`,
+    alternates: { canonical: `/portfolio/${work.id}` },
+    openGraph: {
+      title: `${work.title} — Youssef Production`,
+      description: work.description ?? undefined,
+      url: `/portfolio/${work.id}`,
+      images: work.image_urls[0]
+        ? [{ url: absoluteUrl(work.image_urls[0]), alt: work.title }]
+        : [],
+    },
   };
 }
 
@@ -46,9 +58,11 @@ export default async function WorkPage({
     "@context": "https://schema.org",
     "@type": "CreativeWork",
     name: work.title,
-    image: image,
+    url: absoluteUrl(`/portfolio/${work.id}`),
+    image: image ? absoluteUrl(image) : undefined,
     author: { "@type": "Person", name: "Youssef Production" },
     genre: work.category,
+    ...(work.location && { locationCreated: work.location }),
     ...(stats.count > 0 && {
       aggregateRating: {
         "@type": "AggregateRating",
@@ -58,11 +72,39 @@ export default async function WorkPage({
     }),
   };
 
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Accueil",
+        item: absoluteUrl("/"),
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Portfolio",
+        item: absoluteUrl("/portfolio"),
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: work.title,
+      },
+    ],
+  };
+
   return (
     <div className="bg-white px-6 py-16">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
       />
       <div className="mx-auto max-w-4xl">
         <Link

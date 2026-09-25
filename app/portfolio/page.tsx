@@ -3,7 +3,16 @@ import GalleryGrid from "@/components/GalleryGrid";
 import { getWorks, getAllApprovedReviews, buildRatingsMap } from "@/lib/supabase/queries";
 
 export const metadata: Metadata = {
-  title: "Portfolio",
+  title: "Portfolio — Mariages, fiançailles & événements à Marrakech",
+  description:
+    "Découvrez les plus belles réalisations de Youssef Production : reportages de mariage, séances fiançailles et couverture d'événements à Marrakech.",
+  alternates: { canonical: "/portfolio" },
+  openGraph: {
+    title: "Portfolio — Youssef Production",
+    description:
+      "Reportages de mariage, fiançailles et événements immortalisés à Marrakech.",
+    url: "/portfolio",
+  },
 };
 
 export const revalidate = 300;

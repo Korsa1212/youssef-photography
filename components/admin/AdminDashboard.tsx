@@ -288,9 +288,6 @@ export default function AdminDashboard({ userEmail }: { userEmail?: string }) {
                 )}
                 <p className="mt-3 text-xs text-zinc-400">
                   Les photos deviennent visibles immédiatement après publication.
-                  Si l&apos;upload échoue : exécutez la partie STORAGE de{" "}
-                  <code className="rounded bg-zinc-100 px-1">supabase/schema.sql</code>{" "}
-                  dans l&apos;éditeur SQL Supabase, puis réessayez.
                 </p>
               </div>
               <button

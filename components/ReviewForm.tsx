@@ -69,14 +69,12 @@ export default function ReviewForm({ workId }: { workId: string }) {
           </button>
         ))}
       </div>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Votre nom"
-          className="rounded-xl border border-zinc-200 px-4 py-3 text-base outline-none transition-colors focus:border-zinc-400"
-        />
-      </div>
+      <input
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        placeholder="Votre nom"
+        className="w-full rounded-xl border border-zinc-200 px-4 py-3 text-base outline-none transition-colors focus:border-zinc-400"
+      />
       <textarea
         value={feedback}
         onChange={(e) => setFeedback(e.target.value)}
