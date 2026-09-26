@@ -8,11 +8,12 @@ import { revalidateNow } from "@/lib/revalidate";
 import Stars from "../Stars";
 import PostsManager from "./PostsManager";
 import FaqManager from "./FaqManager";
+import AccountSettings from "./AccountSettings";
 import type { Work, Review } from "@/lib/supabase/queries";
 
 const CATEGORIES = ["Mariage", "Fiançailles", "Événements", "Autre"];
 
-type Tab = "works" | "reviews" | "blog" | "faq";
+type Tab = "works" | "reviews" | "blog" | "faq" | "account";
 
 function pathFromUrl(url: string): string | null {
   const marker = "/object/public/works/";
@@ -183,6 +184,7 @@ export default function AdminDashboard({ userEmail }: { userEmail?: string }) {
               ["reviews", `Avis${pending.length ? ` (${pending.length})` : ""}`],
               ["blog", "Blog"],
               ["faq", "FAQ"],
+              ["account", "Compte"],
             ] as const
           ).map(([key, label]) => (
             <button
@@ -436,10 +438,12 @@ export default function AdminDashboard({ userEmail }: { userEmail?: string }) {
           <div className="mt-8">
             <PostsManager />
           </div>
-        ) : (
+        ) : tab === "faq" ? (
           <div className="mt-8">
             <FaqManager />
           </div>
+        ) : (
+          <AccountSettings userEmail={userEmail} />
         )}
       </div>
     </div>
