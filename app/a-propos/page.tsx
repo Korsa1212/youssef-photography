@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import {
+  EMAIL,
+  INSTAGRAM_URL,
+  PHONE_E164,
+  absoluteUrl,
+} from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "À propos — votre photographe à Marrakech",
@@ -93,9 +99,10 @@ const jsonLd = {
   mainEntity: {
     "@type": "ProfessionalService",
     name: "Youssef Production",
-    url: "https://youssefproduction.com",
-    telephone: "+212696819328",
-    email: "baghzaoui1@gmail.com",
+    url: absoluteUrl("/a-propos"),
+    telephone: PHONE_E164,
+    email: EMAIL,
+    sameAs: [INSTAGRAM_URL],
     address: {
       "@type": "PostalAddress",
       addressLocality: "Marrakech",

@@ -4,6 +4,14 @@ import type { Metadata } from "next";
 import Stars from "@/components/Stars";
 import WorkCard from "@/components/WorkCard";
 import {
+  EMAIL,
+  GOOGLE_REVIEW_URL,
+  INSTAGRAM_URL,
+  PHONE_E164,
+  SITE_URL,
+  WHATSAPP_URL,
+} from "@/lib/seo";
+import {
   getWorks,
   getAllApprovedReviews,
   getPublishedPosts,
@@ -70,9 +78,9 @@ export default async function Home() {
     name: "Youssef Production",
     description:
       "Photographe et vidéaste à Marrakech — mariage, fiançailles, événements.",
-    url: "https://youssefproduction.com",
-    telephone: "+212696819328",
-    email: "baghzaoui1@gmail.com",
+    url: SITE_URL,
+    telephone: PHONE_E164,
+    email: EMAIL,
     image: heroImage ?? HERO_IMAGE,
     priceRange: "€€",
     areaServed: "Marrakech et ses environs, Maroc",
@@ -81,6 +89,7 @@ export default async function Home() {
       addressLocality: "Marrakech",
       addressCountry: "MA",
     },
+    sameAs: [INSTAGRAM_URL, ...(GOOGLE_REVIEW_URL ? [GOOGLE_REVIEW_URL] : [])],
     ...(stats.count > 0 && {
       aggregateRating: {
         "@type": "AggregateRating",
@@ -322,14 +331,34 @@ export default async function Home() {
                   Basé sur {stats.count} avis vérifiés
                 </p>
                 <div className="my-7 h-px w-16 bg-white/20" />
-                <a
-                  href="https://wa.me/212696819328"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-full border border-white/30 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:border-white hover:bg-white/10"
-                >
-                  Laissez votre avis
-                </a>
+                <div className="flex flex-wrap items-center justify-center gap-3">
+                  <a
+                    href={WHATSAPP_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-full border border-white/30 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:border-white hover:bg-white/10"
+                  >
+                    Laissez votre avis
+                  </a>
+                  {GOOGLE_REVIEW_URL && (
+                    <a
+                      href={GOOGLE_REVIEW_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-white/30 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:border-white hover:bg-white/10"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        className="h-4 w-4"
+                        fill="currentColor"
+                        aria-hidden
+                      >
+                        <path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                      </svg>
+                      Avis sur Google
+                    </a>
+                  )}
+                </div>
               </div>
 
               {/* Review cards */}

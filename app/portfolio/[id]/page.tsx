@@ -191,7 +191,7 @@ export default async function WorkPage({
           <div className="mt-9 rounded-2xl border border-zinc-100 bg-zinc-50 p-7">
             <h3 className="text-lg font-medium text-zinc-900">Laisser un avis</h3>
             <p className="mb-5 mt-1.5 text-base text-zinc-500">
-              Votre avis aide dautres clients à faire confiance à Youssef.
+              Votre avis aide d&apos;autres clients à faire confiance à Youssef.
             </p>
             <ReviewForm workId={work.id} />
           </div>
