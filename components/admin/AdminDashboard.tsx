@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { revalidateNow } from "@/lib/revalidate";
+import { optimizeImage, isSupportedImage } from "@/lib/image";
 import Stars from "../Stars";
 import PostsManager from "./PostsManager";
 import FaqManager from "./FaqManager";
@@ -39,6 +40,109 @@ async function fetchWorksAndReviews() {
   };
 }
 
+function PhotoGrid({
+  photos,
+  onRemove,
+  onMove,
+  onUpload,
+  uploading = false,
+  maxHeight = "max-h-72",
+}: {
+  photos: string[];
+  onRemove: (index: number) => void;
+  onMove: (from: number, to: number) => void;
+  onUpload?: (files: FileList | null) => void;
+  uploading?: boolean;
+  maxHeight?: string;
+}) {
+  return (
+    <div>
+      <div className="flex items-center justify-between">
+        <p className="text-sm text-zinc-600">
+          <span className="font-medium text-zinc-900">{photos.length}</span>{" "}
+          photo{photos.length > 1 ? "s" : ""}
+          {photos.length > 0 && (
+            <span className="text-zinc-400">
+              {" "}
+              — la première est la couverture
+            </span>
+          )}
+        </p>
+        {onUpload && (
+          <label className="cursor-pointer rounded-full border border-dashed border-zinc-300 px-4 py-2 text-xs text-zinc-500 transition-colors hover:border-zinc-500">
+            {uploading ? "Upload..." : "+ Ajouter"}
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              className="hidden"
+              onChange={(e) => onUpload(e.target.files)}
+            />
+          </label>
+        )}
+      </div>
+
+      {photos.length > 0 ? (
+        <div
+          className={`mt-3 grid grid-cols-3 gap-2 overflow-y-auto pr-1 sm:grid-cols-4 ${maxHeight}`}
+        >
+          {photos.map((url, i) => (
+            <div
+              key={url}
+              className="group relative aspect-square overflow-hidden rounded-lg bg-zinc-100"
+            >
+              <Image
+                src={url}
+                alt={`Photo ${i + 1}`}
+                fill
+                sizes="120px"
+                className="object-cover"
+              />
+              {i === 0 && (
+                <span className="absolute left-1 top-1 rounded-full bg-amber-500 px-2 py-0.5 text-[9px] font-medium uppercase tracking-wide text-zinc-900">
+                  Couverture
+                </span>
+              )}
+              <div className="absolute right-1 top-1 flex gap-1">
+                <button
+                  type="button"
+                  onClick={() => onMove(i, i - 1)}
+                  disabled={i === 0}
+                  aria-label={`Déplacer la photo ${i + 1} avant`}
+                  className="flex h-6 w-6 items-center justify-center rounded-full bg-zinc-900/70 text-[11px] text-white transition-colors hover:bg-zinc-900 disabled:opacity-25"
+                >
+                  ←
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onMove(i, i + 1)}
+                  disabled={i === photos.length - 1}
+                  aria-label={`Déplacer la photo ${i + 1} après`}
+                  className="flex h-6 w-6 items-center justify-center rounded-full bg-zinc-900/70 text-[11px] text-white transition-colors hover:bg-zinc-900 disabled:opacity-25"
+                >
+                  →
+                </button>
+              </div>
+              <button
+                type="button"
+                onClick={() => onRemove(i)}
+                aria-label={`Supprimer la photo ${i + 1}`}
+                className="absolute bottom-1 right-1 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-xs text-white opacity-0 transition-opacity focus:opacity-100 group-hover:opacity-100"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="mt-3 rounded-xl border border-dashed border-zinc-200 p-6 text-center text-sm text-zinc-400">
+          Aucune photo pour le moment.
+        </p>
+      )}
+    </div>
+  );
+}
+
 export default function AdminDashboard({ userEmail }: { userEmail?: string }) {
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("works");
@@ -54,6 +158,10 @@ export default function AdminDashboard({ userEmail }: { userEmail?: string }) {
   const [eventDate, setEventDate] = useState("");
   const [images, setImages] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [uploadDone, setUploadDone] = useState(0);
+  const [uploadErrors, setUploadErrors] = useState<string[]>([]);
+  const [editingPhotos, setEditingPhotos] = useState<string | null>(null);
+  const [draftPhotos, setDraftPhotos] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const load = useCallback(async () => {
@@ -76,26 +184,57 @@ export default function AdminDashboard({ userEmail }: { userEmail?: string }) {
     };
   }, []);
 
+  async function uploadOne(file: File) {
+    if (!isSupportedImage(file)) {
+      throw new Error("ce n'est pas une photo");
+    }
+    const supabase = createClient();
+    const optimized = await optimizeImage(file);
+    const path = `${Date.now()}-${Math.random()
+      .toString(36)
+      .slice(2, 8)}-${optimized.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
+    const { error } = await supabase.storage
+      .from("works")
+      .upload(path, optimized, { cacheControl: "3600" });
+    if (error) throw new Error(error.message);
+    const { data } = await supabase.storage.from("works").getPublicUrl(path);
+    return data.publicUrl;
+  }
+
   async function handleFiles(files: FileList | null) {
     if (!files || files.length === 0) return;
     setUploading(true);
-    const supabase = createClient();
-    const urls: string[] = [];
-    for (const file of Array.from(files)) {
-      const path = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
-      const { error } = await supabase.storage
-        .from("works")
-        .upload(path, file, { cacheControl: "3600" });
-      if (error) {
-        alert("Erreur d'upload : " + error.message);
-        setUploading(false);
-        return;
-      }
-      const { data } = await supabase.storage.from("works").getPublicUrl(path);
-      urls.push(data.publicUrl);
-    }
-    setImages((prev) => [...prev, ...urls]);
+    setUploadDone(0);
+    setUploadErrors([]);
+    let done = 0;
+    const ok: string[] = [];
+    const failed: string[] = [];
+
+    const queue = Array.from(files);
+    const workers = Array.from(
+      { length: Math.min(4, queue.length) },
+      async () => {
+        while (queue.length > 0) {
+          const file = queue.shift();
+          if (!file) return;
+          try {
+            ok.push(await uploadOne(file));
+          } catch (e) {
+            failed.push(
+              `${file.name} — ${e instanceof Error ? e.message : "échec"}`,
+            );
+          }
+          done += 1;
+          setUploadDone(done);
+        }
+      },
+    );
+    await Promise.all(workers);
+
+    setImages((prev) => [...prev, ...ok]);
+    setUploadErrors(failed);
     setUploading(false);
+    if (fileInputRef.current) fileInputRef.current.value = "";
   }
 
   async function addWork(e: React.FormEvent) {
@@ -121,6 +260,61 @@ export default function AdminDashboard({ userEmail }: { userEmail?: string }) {
     setImages([]);
     if (fileInputRef.current) fileInputRef.current.value = "";
     await load();
+  }
+
+  function moveIn(list: string[], from: number, to: number) {
+    if (to < 0 || to >= list.length) return list;
+    const next = [...list];
+    const [item] = next.splice(from, 1);
+    next.splice(to, 0, item);
+    return next;
+  }
+
+  function openPhotoEditor(work: Work) {
+    setEditingPhotos(work.id);
+    setDraftPhotos(work.image_urls);
+  }
+
+  async function saveDraftPhotos(work: Work) {
+    const supabase = createClient();
+    const { error } = await supabase
+      .from("works")
+      .update({ image_urls: draftPhotos })
+      .eq("id", work.id);
+    if (error) {
+      alert(error.message);
+      return;
+    }
+    setEditingPhotos(null);
+    await load();
+  }
+
+  async function addPhotosToWork(work: Work, files: FileList | null) {
+    if (!files || files.length === 0) return;
+    setUploading(true);
+    const queue = Array.from(files);
+    const added: string[] = [];
+    const failed: string[] = [];
+    const workers = Array.from(
+      { length: Math.min(4, queue.length) },
+      async () => {
+        while (queue.length > 0) {
+          const file = queue.shift();
+          if (!file) return;
+          try {
+            added.push(await uploadOne(file));
+          } catch (e) {
+            failed.push(
+              `${file.name} — ${e instanceof Error ? e.message : "échec"}`,
+            );
+          }
+        }
+      },
+    );
+    await Promise.all(workers);
+    setDraftPhotos((prev) => [...prev, ...added]);
+    setUploadErrors(failed);
+    setUploading(false);
   }
 
   async function deleteWork(work: Work) {
@@ -266,30 +460,36 @@ export default function AdminDashboard({ userEmail }: { userEmail?: string }) {
                     onChange={(e) => handleFiles(e.target.files)}
                   />
                 </label>
-                {images.length > 0 && (
-                  <div className="mt-3 flex flex-wrap gap-3">
-                    {images.map((url, i) => (
-                      <div key={url} className="relative h-20 w-20">
-                        <Image
-                          src={url}
-                          alt="Aperçu"
-                          fill
-                          sizes="80px"
-                          className="rounded-lg object-cover"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setImages(images.filter((_, j) => j !== i))}
-                          className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white"
-                        >
-                          ×
-                        </button>
-                      </div>
-                    ))}
+                <PhotoGrid
+                  photos={images}
+                  uploading={uploading}
+                  onUpload={handleFiles}
+                  onRemove={(i) =>
+                    setImages(images.filter((_, j) => j !== i))
+                  }
+                  onMove={(from, to) => setImages(moveIn(images, from, to))}
+                />
+                {uploadDone > 0 && uploading && (
+                  <p className="mt-2 text-xs text-zinc-500">
+                    {uploadDone} photo(s) envoyée(s)…
+                  </p>
+                )}
+                {uploadErrors.length > 0 && (
+                  <div className="mt-2 rounded-xl border border-red-100 bg-red-50 p-3">
+                    <p className="text-xs font-medium text-red-700">
+                      {uploadErrors.length} photo(s) n&apos;ont pas pu être
+                      envoyées :
+                    </p>
+                    <ul className="mt-1 list-inside list-disc text-xs text-red-600">
+                      {uploadErrors.slice(0, 5).map((e) => (
+                        <li key={e}>{e}</li>
+                      ))}
+                    </ul>
                   </div>
                 )}
                 <p className="mt-3 text-xs text-zinc-400">
-                  Les photos deviennent visibles immédiatement après publication.
+                  Les photos sont automatiquement compressées pour accélérer le
+                  site. Elles deviennent visibles dès la publication.
                 </p>
               </div>
               <button
@@ -327,6 +527,10 @@ export default function AdminDashboard({ userEmail }: { userEmail?: string }) {
                             className="object-cover"
                           />
                         )}
+                        <span className="absolute right-2 top-2 rounded-full bg-zinc-900/75 px-2.5 py-1 text-[10px] font-medium text-white">
+                          {work.image_urls.length} photo
+                          {work.image_urls.length > 1 ? "s" : ""}
+                        </span>
                       </div>
                       <div className="p-4">
                         <p className="text-[11px] uppercase tracking-[0.2em] text-zinc-400">
@@ -335,12 +539,63 @@ export default function AdminDashboard({ userEmail }: { userEmail?: string }) {
                         <h3 className="mt-1 font-medium text-zinc-900">
                           {work.title}
                         </h3>
-                        <button
-                          onClick={() => deleteWork(work)}
-                          className="mt-3 w-full rounded-full border border-red-100 py-2 text-sm text-red-600 transition-colors hover:bg-red-50"
-                        >
-                          Supprimer
-                        </button>
+                        <div className="mt-3 flex gap-2">
+                          <button
+                            onClick={() => {
+                              if (editingPhotos === work.id) {
+                                setEditingPhotos(null);
+                              } else {
+                                openPhotoEditor(work);
+                              }
+                            }}
+                            className="flex-1 rounded-full border border-zinc-200 py-2 text-sm text-zinc-700 transition-colors hover:border-zinc-400"
+                          >
+                            {editingPhotos === work.id
+                              ? "Fermer"
+                              : "Gérer les photos"}
+                          </button>
+                          <button
+                            onClick={() => deleteWork(work)}
+                            className="rounded-full border border-red-100 px-4 py-2 text-sm text-red-600 transition-colors hover:bg-red-50"
+                          >
+                            Supprimer
+                          </button>
+                        </div>
+
+                        {editingPhotos === work.id && (
+                          <div className="mt-4 border-t border-zinc-100 pt-4">
+                            <PhotoGrid
+                              photos={draftPhotos}
+                              uploading={uploading}
+                              maxHeight="max-h-60"
+                              onUpload={(files) => addPhotosToWork(work, files)}
+                              onRemove={(i) =>
+                                setDraftPhotos(
+                                  draftPhotos.filter((_, j) => j !== i),
+                                )
+                              }
+                              onMove={(from, to) =>
+                                setDraftPhotos(moveIn(draftPhotos, from, to))
+                              }
+                            />
+                            <div className="mt-4 flex gap-2">
+                              <button
+                                onClick={() => saveDraftPhotos(work)}
+                                disabled={uploading}
+                                className="flex-1 rounded-full bg-zinc-900 py-2 text-sm text-white transition-colors hover:bg-zinc-700 disabled:opacity-50"
+                              >
+                                Enregistrer
+                              </button>
+                              <button
+                                onClick={() => openPhotoEditor(work)}
+                                disabled={uploading}
+                                className="rounded-full border border-zinc-200 px-4 py-2 text-sm text-zinc-600 transition-colors hover:border-zinc-400"
+                              >
+                                Annuler
+                              </button>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}

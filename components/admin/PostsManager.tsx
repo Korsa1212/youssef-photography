@@ -5,6 +5,7 @@ import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import { slugify } from "@/lib/slug";
 import { revalidateNow } from "@/lib/revalidate";
+import { optimizeImage } from "@/lib/image";
 import type { Post } from "@/lib/supabase/queries";
 
 export default function PostsManager() {
@@ -36,10 +37,11 @@ export default function PostsManager() {
   }, []);
 
   async function handleCover(files: FileList | null) {
-    const file = files?.[0];
-    if (!file) return;
+    const original = files?.[0];
+    if (!original) return;
     setUploading(true);
     const supabase = createClient();
+    const file = await optimizeImage(original);
     const path = `cover-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
     const { error } = await supabase.storage
       .from("works")

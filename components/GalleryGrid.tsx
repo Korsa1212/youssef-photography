@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import WorkCard from "./WorkCard";
+import BentoGrid from "./BentoGrid";
 import type { Work } from "@/lib/supabase/queries";
 
 export default function GalleryGrid({
@@ -33,19 +33,21 @@ export default function GalleryGrid({
             }`}
           >
             {cat}
+            <span className="ml-1.5 text-xs opacity-60">
+              {cat === "Tous"
+                ? works.length
+                : works.filter((w) => w.category === cat).length}
+            </span>
           </button>
         ))}
       </div>
+
       {filtered.length === 0 ? (
         <p className="py-20 text-center text-base text-zinc-400">
           Aucun travail dans cette catégorie pour le moment.
         </p>
       ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((work) => (
-            <WorkCard key={work.id} work={work} rating={ratings[work.id]} />
-          ))}
-        </div>
+        <BentoGrid works={filtered} ratings={ratings} />
       )}
     </div>
   );

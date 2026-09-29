@@ -18,6 +18,8 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-zinc-100 bg-white/95 backdrop-blur">
       <div className="mx-auto flex h-20 max-w-6xl items-center justify-between px-6">
+        {/* Not preloaded on purpose: the hero image owns the preload slot on
+            every page, and a second preload would waste bandwidth. */}
         <Logo />
 
         <nav className="hidden items-center gap-8 text-base text-zinc-600 md:flex">

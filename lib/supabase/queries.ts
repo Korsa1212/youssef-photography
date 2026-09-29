@@ -46,6 +46,21 @@ export type Faq = {
 const WORK_FIELDS =
   "id, title, description, category, location, event_date, image_urls, created_at";
 
+const IMAGE_EXTENSIONS = /\.(jpe?g|png|webp|gif|avif)(\?|#|$)/i;
+
+/**
+ * `works.image_urls` is a free-form text array, so a video (or any other file)
+ * can end up in the photo list and then break `next/image` at render time.
+ * Strip anything that is not an image so the public pages stay safe. The raw
+ * values are still visible in the admin panel, so nothing is lost.
+ */
+function onlyImages(works: Work[]): Work[] {
+  return works.map((w) => ({
+    ...w,
+    image_urls: (w.image_urls ?? []).filter((u) => IMAGE_EXTENSIONS.test(u)),
+  }));
+}
+
 export async function getWorks(): Promise<Work[]> {
   try {
     const { data, error } = await createReader()
@@ -53,7 +68,7 @@ export async function getWorks(): Promise<Work[]> {
       .select(WORK_FIELDS)
       .order("created_at", { ascending: false });
     if (error) return [];
-    return (data ?? []) as Work[];
+    return onlyImages((data ?? []) as Work[]);
   } catch {
     return [];
   }
@@ -67,7 +82,9 @@ export async function getWork(id: string): Promise<Work | null> {
       .eq("id", id)
       .maybeSingle();
     if (error) return null;
-    return (data as Work | null) ?? null;
+    const work = (data as Work | null) ?? null;
+    if (!work) return null;
+    return onlyImages([work])[0];
   } catch {
     return null;
   }

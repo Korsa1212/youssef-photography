@@ -1,52 +1,28 @@
+import Image from "next/image";
 import Link from "next/link";
 
-const THEME = {
-  light: {
-    stroke: "#57534b",
-    sub: "text-zinc-400",
-  },
-  dark: {
-    stroke: "#fafaf9",
-    sub: "text-white/45",
-  },
-} as const;
-
 export default function Logo({
-  variant = "light",
   className = "",
+  preload = false,
 }: {
-  variant?: "light" | "dark";
   className?: string;
+  preload?: boolean;
 }) {
-  const t = THEME[variant];
-
   return (
     <Link
       href="/"
       aria-label="Youssef Production — accueil"
-      className={`group flex shrink-0 flex-col items-center leading-none ${className}`}
+      className={`flex shrink-0 items-center ${className}`}
     >
-      <span
-        className={`text-[8px] font-medium uppercase tracking-[0.42em] sm:text-[9px] sm:tracking-[0.5em] ${t.sub}`}
-      >
-        Photographe &amp; Vidéaste
-      </span>
-
-      <span
-        className="mt-1.5 font-script text-[1.75rem] tracking-[0.24em] sm:text-[2.1rem] sm:tracking-[0.28em]"
-        style={{
-          color: "transparent",
-          WebkitTextStroke: `1px ${t.stroke}`,
-        }}
-      >
-        YOUSSEF
-      </span>
-
-      <span
-        className={`mt-1.5 text-[9px] font-medium uppercase tracking-[0.5em] sm:text-[10px] sm:tracking-[0.58em] ${t.sub}`}
-      >
-        Production
-      </span>
+      <Image
+        src="/youssef-logo.png"
+        alt="Youssef Production"
+        width={900}
+        height={218}
+        preload={preload}
+        sizes="(max-width: 640px) 40vw, 220px"
+        className="h-auto w-auto max-w-[150px] object-contain sm:max-w-[210px]"
+      />
     </Link>
   );
 }

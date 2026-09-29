@@ -35,16 +35,33 @@ export default async function PortfolioPage({
       : "Tous";
 
   return (
-    <div className="bg-white px-6 py-16">
+    <div className="bg-white px-6 pb-24 pt-20">
       <div className="mx-auto max-w-6xl">
-        <h1 className="text-center font-display text-4xl font-semibold text-zinc-900 sm:text-5xl">
-          Portfolio
-        </h1>
-        <p className="mx-auto mt-4 max-w-lg text-center text-lg text-zinc-500">
-          Mariage, fiançailles, événements — mes plus belles réalisations.
-        </p>
-        <div className="mt-12">
-          <GalleryGrid works={works} ratings={ratings} initialCategory={initialCategory} />
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-amber-600">
+              Portfolio
+            </p>
+            <h1 className="mt-3 font-display text-4xl font-semibold tracking-tight text-zinc-900 sm:text-5xl">
+              Mes réalisations
+            </h1>
+            <p className="mt-4 max-w-lg text-zinc-500">
+              Mariage, fiançailles, événements — mes plus belles séries à
+              Marrakech.
+            </p>
+          </div>
+          <p className="text-sm text-zinc-400">
+            {works.length} album{works.length > 1 ? "s" : ""} ·{" "}
+            {works.reduce((n, w) => n + w.image_urls.length, 0)} photos
+          </p>
+        </div>
+
+        <div className="mt-14">
+          <GalleryGrid
+            works={works}
+            ratings={ratings}
+            initialCategory={initialCategory}
+          />
         </div>
       </div>
     </div>

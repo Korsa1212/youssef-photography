@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
@@ -11,6 +12,11 @@ export const contentType = "image/png";
 
 const marcellus = await readFile(join(process.cwd(), "assets/Marcellus.ttf"));
 
+// The supplied logo sits on a white background, so it is shown on a white
+// card rather than dropped straight onto the dark panel.
+const logo = await readFile(join(process.cwd(), "public/youssef-logo.png"));
+const logoDataUri = `data:image/png;base64,${logo.toString("base64")}`;
+
 export default async function OpengraphImage() {
   return new ImageResponse(
     (
@@ -22,7 +28,9 @@ export default async function OpengraphImage() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(135deg, #18181b 0%, #27272a 55%, #3f3f46 100%)",
+          backgroundColor: "#18181b",
+          backgroundImage:
+            "linear-gradient(135deg, #18181b 0%, #27272a 55%, #3f3f46 100%)",
           color: "#fafafa",
           fontFamily: "Marcellus",
           position: "relative",
@@ -38,20 +46,27 @@ export default async function OpengraphImage() {
             background: "linear-gradient(to right, #a16207 0%, #facc15 50%, #a16207 100%)",
           }}
         />
-        <div style={{ fontSize: 62, letterSpacing: 4, textAlign: "center" }}>
-          YOUSSEF PRODUCTION
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#ffffff",
+            borderRadius: 24,
+            padding: "28px 60px",
+          }}
+        >
+          <img
+            src={logoDataUri}
+            alt="Youssef Production"
+            width={520}
+            height={126}
+            style={{ width: 520, height: 126, display: "flex" }}
+          />
         </div>
         <div
           style={{
-            marginTop: 20,
-            width: 520,
-            height: 1,
-            background: "#facc15",
-          }}
-        />
-        <div
-          style={{
-            marginTop: 20,
+            marginTop: 44,
             fontSize: 30,
             color: "#facc15",
             letterSpacing: 8,
@@ -63,7 +78,7 @@ export default async function OpengraphImage() {
         </div>
         <div
           style={{
-            marginTop: 16,
+            marginTop: 20,
             fontSize: 24,
             color: "#d4d4d8",
             letterSpacing: 2,
@@ -74,7 +89,7 @@ export default async function OpengraphImage() {
         </div>
         <div
           style={{
-            marginTop: 8,
+            marginTop: 10,
             fontSize: 24,
             color: "#d4d4d8",
             letterSpacing: 3,

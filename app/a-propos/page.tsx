@@ -25,7 +25,7 @@ const bg = (id: string, w = 1200) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=75`;
 
 const HERO_IMAGE = bg("photo-1516035069371-29a1b244cc32", 2000);
-const PORTRAIT_IMAGE = bg("photo-1522673607200-164d1b6ce486", 1600);
+const PORTRAIT = "/youssef-portrait.jpg";
 const VALUES_BG = bg("photo-1519225421980-715cb0215aed", 2000);
 
 const STATS = [
@@ -127,7 +127,6 @@ export default function AboutPage() {
             alt=""
             fill
             sizes="100vw"
-            priority
             quality={70}
             className="object-cover opacity-40"
           />
@@ -167,18 +166,33 @@ export default function AboutPage() {
       <section className="mx-auto max-w-6xl px-6 py-24">
         <div className="grid items-center gap-14 lg:grid-cols-2">
           <div className="relative mx-auto w-full max-w-md">
-            <div className="overflow-hidden rounded-3xl">
+            <div className="relative overflow-hidden rounded-3xl bg-zinc-100">
               <Image
-                src={PORTRAIT_IMAGE}
-                alt="Youssef Production — photographe à Marrakech"
-                width={1600}
-                height={2000}
+                src={PORTRAIT}
+                alt="Youssef — photographe et vidéaste à Marrakech"
+                width={767}
+                height={1293}
+                preload
                 sizes="(max-width: 1024px) 100vw, 448px"
-                className="aspect-[4/5] w-full object-cover"
+                className="aspect-[3/5] w-full object-cover"
               />
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/45 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-6">
+                <div>
+                  <p className="text-[11px] uppercase tracking-[0.2em] text-amber-400">
+                    Youssef Production
+                  </p>
+                  <p className="mt-1 font-display text-2xl text-white">
+                    Youssef
+                  </p>
+                </div>
+                <span className="flex h-11 w-11 items-center justify-center rounded-full border border-white/30 bg-white/10 text-lg backdrop-blur-sm">
+                  📍
+                </span>
+              </div>
             </div>
             <div className="absolute -bottom-5 -right-3 rounded-2xl border border-white/10 bg-zinc-900 px-6 py-4 shadow-xl sm:-right-6">
-              <p className="text-xs uppercase tracking-[0.2em] text-amber-400">
+              <p className="text-[11px] uppercase tracking-[0.2em] text-amber-400">
                 Basé à
               </p>
               <p className="mt-1 font-display text-xl text-white">

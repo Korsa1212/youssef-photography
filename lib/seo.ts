@@ -19,6 +19,47 @@ export const INSTAGRAM_URL = "https://www.instagram.com/youssef.production";
 export const GOOGLE_REVIEW_URL =
   process.env.NEXT_PUBLIC_GOOGLE_REVIEW_URL?.trim() || null;
 
+/**
+ * Wedding film link. Accepts a YouTube, Vimeo or direct video-file URL.
+ * Left null so the section stays hidden until a link is provided.
+ * Note: Facebook links cannot be embedded on third-party sites and are ignored.
+ */
+export const WEDDING_FILM_URL =
+  process.env.NEXT_PUBLIC_WEDDING_FILM_URL?.trim() || null;
+
+/** Optional poster frame shown before playback. Falls back to a real portfolio photo. */
+export const WEDDING_FILM_POSTER =
+  process.env.NEXT_PUBLIC_WEDDING_FILM_POSTER?.trim() || null;
+
+export type FilmSource =
+  | { kind: "embed"; src: string }
+  | { kind: "file"; src: string };
+
+export function filmSource(raw: string | null): FilmSource | null {
+  if (!raw) return null;
+  const url = raw.trim();
+
+  const youtube =
+    url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([\w-]{6,})/);
+  if (youtube) {
+    return {
+      kind: "embed",
+      src: `https://www.youtube-nocookie.com/embed/${youtube[1]}?rel=0&modestbranding=1&playsinline=1`,
+    };
+  }
+
+  const vimeo = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+  if (vimeo) {
+    return { kind: "embed", src: `https://player.vimeo.com/video/${vimeo[1]}` };
+  }
+
+  if (/\.(mp4|webm|mov|m4v)(\?|#|$)/i.test(url)) {
+    return { kind: "file", src: url };
+  }
+
+  return null;
+}
+
 export function absoluteUrl(path: string): string {
   const p = path.startsWith("/") ? path : `/${path}`;
   return `${SITE_URL}${p}`;

@@ -95,7 +95,7 @@ export default async function PostPage({
               alt={post.title}
               fill
               sizes="(max-width: 768px) 100vw, 768px"
-              priority
+              preload
               className="object-cover"
             />
           </div>

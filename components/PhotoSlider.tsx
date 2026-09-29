@@ -45,7 +45,7 @@ export default function PhotoSlider({
           src={images[index]}
           alt={`${alt} — photo ${index + 1}`}
           fill
-          priority={index === 0}
+          preload={index === 0}
           sizes="(max-width: 768px) 100vw, 896px"
           className="object-cover"
         />
