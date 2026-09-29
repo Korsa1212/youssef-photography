@@ -122,7 +122,7 @@ First client: **Youssef**, photography business. He wants:
 - **Phone**: +212 696 819 328
 - **Email**: baghzaoui1@gmail.com
 - **WhatsApp**: wa.me/212...
-- **Location**: MARRAKECH / Kalaa des Sraghna
+- **Location**: MARRAKECH
 - **Instagram**: @youssef.production
 - **UI preference**: light professional UI
 

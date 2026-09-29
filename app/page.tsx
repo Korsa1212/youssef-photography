@@ -174,7 +174,7 @@ export default async function Home() {
           {/* Info bar */}
           <div className="mt-14 flex w-full max-w-3xl flex-col items-center justify-center gap-3 rounded-2xl border border-white/15 bg-white/10 px-6 py-5 text-sm text-white/85 backdrop-blur sm:flex-row sm:gap-8">
             <span className="flex items-center gap-2">
-              <span aria-hidden>📍</span> Marrakech · Kalaa des Sraghna
+              <span aria-hidden>📍</span> Marrakech, Maroc
             </span>
             <span className="hidden h-4 w-px bg-white/25 sm:block" />
             <span className="flex items-center gap-2">
@@ -555,7 +555,7 @@ export default async function Home() {
             ))}
           </div>
           <p className="mt-8 text-sm text-white/50">
-           📍 Marrakech · Kalaa des Sraghna — interventions dans tout le Maroc
+           📍 Marrakech — interventions dans tout le Maroc
           </p>
         </div>
       </section>

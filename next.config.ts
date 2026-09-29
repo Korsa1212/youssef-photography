@@ -3,7 +3,6 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   devIndicators: false,
   images: {
-    dangerouslyAllowLocalIP: true,
     remotePatterns: [
       {
         protocol: "https",

@@ -141,9 +141,8 @@ export default function AboutPage() {
             L&apos;homme derrière l&apos;objectif
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/80">
-            Youssef, photographe & vidéaste basé à Marrakech et Kalaa des
-            Sraghna, créateur de souvenirs pour les mariages, fiançailles et
-            événements.
+            Youssef, photographe &amp; vidéaste basé à Marrakech, créateur de
+            souvenirs pour les mariages, fiançailles et événements.
           </p>
           <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
             <a

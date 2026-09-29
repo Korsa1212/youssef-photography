@@ -122,7 +122,7 @@ export default function Footer() {
                   <circle cx="12" cy="10" r="3" />
                 </svg>
               </span>
-              Marrakech / Kalaa des Sraghna, Maroc
+              Marrakech, Maroc
             </p>
             <p className="flex items-center gap-3 text-[15px]">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-amber-400">

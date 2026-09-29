@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
+import { Geist, Geist_Mono, Playfair_Display, Italiana } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
@@ -20,6 +20,12 @@ const playfair = Playfair_Display({
   variable: "--font-playfair",
   subsets: ["latin"],
   weight: ["500", "600", "700"],
+});
+
+const italiana = Italiana({
+  variable: "--font-italiana",
+  subsets: ["latin"],
+  weight: ["400"],
 });
 
 const siteVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION;
@@ -56,7 +62,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="fr"
-      className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} ${italiana.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-white font-sans text-zinc-900">
         <GoogleAnalytics />

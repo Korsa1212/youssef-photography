@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Logo from "./Logo";
 
 const NAV = [
   { href: "/", label: "Accueil" },
@@ -17,14 +18,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-zinc-100 bg-white/95 backdrop-blur">
       <div className="mx-auto flex h-20 max-w-6xl items-center justify-between px-6">
-        <Link href="/" className="flex flex-col leading-tight">
-          <span className="text-xl font-semibold tracking-tight text-zinc-900 sm:text-2xl">
-            YOUSSEF PRODUCTION
-          </span>
-          <span className="text-[11px] uppercase tracking-[0.3em] text-zinc-400">
-            Photographe & Vidéaste
-          </span>
-        </Link>
+        <Logo />
 
         <nav className="hidden items-center gap-8 text-base text-zinc-600 md:flex">
           {NAV.map((n) => (

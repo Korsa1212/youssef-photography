@@ -4,6 +4,13 @@ import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
+const ERROR_MESSAGES: Record<string, string> = {
+  not_allowed:
+    "Ce compte n'est pas autorisé à administrer le site. Utilisez le compte du photographe.",
+  setup_missing:
+    "Accès admin non configuré. Dans Supabase, ouvrez SQL Editor et exécutez le fichier supabase/002-admin-lock.sql.",
+};
+
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -11,6 +18,8 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const blocked = ERROR_MESSAGES[searchParams.get("error") ?? ""];
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -29,6 +38,11 @@ function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {blocked && (
+        <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-900">
+          {blocked}
+        </p>
+      )}
       <input
         type="email"
         required

@@ -1,14 +1,19 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { checkAdmin } from "@/lib/supabase/admin";
 import AdminDashboard from "@/components/admin/AdminDashboard";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/admin/login");
-  return <AdminDashboard userEmail={user.email} />;
+  const check = await checkAdmin();
+
+  if (check.status !== "ok") {
+    redirect(
+      check.status === "setup_missing"
+        ? "/admin/login?error=setup_missing"
+        : "/admin/login?error=not_allowed"
+    );
+  }
+
+  return <AdminDashboard userEmail={check.email} />;
 }
