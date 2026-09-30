@@ -19,6 +19,12 @@ insert into public.admins (email)
 values ('baghzaoui1@gmail.com')
 on conflict (email) do nothing;
 
+-- Second admin address. Kept alongside the original one so neither account is
+-- ever locked out. The Auth user must exist in Supabase before it can sign in.
+insert into public.admins (email)
+values ('contact@youssefproduction.com')
+on conflict (email) do nothing;
+
 -- To add a second admin later, uncomment and run:
 -- insert into public.admins (email) values ('other@example.com')
 -- on conflict (email) do nothing;

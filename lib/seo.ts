@@ -8,7 +8,7 @@ export const SITE_DESCRIPTION =
 export const PHONE_E164 = "+212696819328";
 export const PHONE_DISPLAY = "+212 696 819 328";
 export const WHATSAPP_URL = "https://wa.me/212696819328";
-export const EMAIL = "baghzaoui1@gmail.com";
+export const EMAIL = "contact@youssefproduction.com";
 export const INSTAGRAM_URL = "https://www.instagram.com/youssef.production";
 
 /**

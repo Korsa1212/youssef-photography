@@ -82,7 +82,7 @@ export default function Footer() {
               +212 696 819 328
             </a>
             <a
-              href="mailto:baghzaoui1@gmail.com"
+              href="mailto:contact@youssefproduction.com"
               className="flex items-center gap-3 text-[15px] transition-colors hover:text-white"
             >
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-amber-400">
@@ -91,7 +91,7 @@ export default function Footer() {
                   <path d="m22 7-10 6L2 7" />
                 </svg>
               </span>
-              baghzaoui1@gmail.com
+              contact@youssefproduction.com
             </a>
             <a
               href="https://wa.me/212696819328"
