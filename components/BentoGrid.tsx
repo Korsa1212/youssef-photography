@@ -104,7 +104,7 @@ export default function BentoGrid({
 
   return (
     <div
-      className={`grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-4 md:auto-rows-[240px] lg:auto-rows-[300px] ${className}`}
+      className={`grid grid-cols-1 gap-4 md:grid-cols-4 md:auto-rows-[240px] lg:auto-rows-[300px] ${className}`}
     >
       {works.map((work, i) => {
         const [cols, rows] = spans[i];
@@ -116,7 +116,7 @@ export default function BentoGrid({
           <Link
             key={work.id}
             href={`/portfolio/${work.id}`}
-            className={`group relative isolate flex overflow-hidden rounded-2xl bg-zinc-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 ${SPAN_CLASS[`${cols}x${rows}`] ?? "md:col-span-1 md:row-span-1"}`}
+            className={`group relative isolate flex aspect-[4/5] overflow-hidden rounded-2xl bg-zinc-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 md:aspect-auto ${SPAN_CLASS[`${cols}x${rows}`] ?? "md:col-span-1 md:row-span-1"}`}
           >
             {image ? (
               <Image
@@ -125,7 +125,7 @@ export default function BentoGrid({
                 fill
                 sizes={
                   cols === 4
-                    ? "100vw"
+                    ? "(max-width: 768px) 100vw, 1152px"
                     : cols === 2
                       ? "(max-width: 768px) 100vw, 50vw"
                       : "(max-width: 768px) 100vw, 25vw"
@@ -138,7 +138,7 @@ export default function BentoGrid({
               </div>
             )}
 
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-black/25 opacity-80 transition-opacity duration-500 group-hover:opacity-95" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-black/25 opacity-95 transition-opacity duration-500 md:opacity-80 md:group-hover:opacity-95" />
 
             {photoCount > 0 && (
               <span className="absolute right-3 top-3 flex items-center gap-1.5 rounded-full bg-black/40 px-2.5 py-1 text-[11px] font-medium text-white/90 backdrop-blur-sm">
@@ -172,7 +172,7 @@ export default function BentoGrid({
               )}
             </div>
 
-            <span className="absolute left-3 top-3 rounded-full border border-white/25 bg-white/10 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.18em] text-white/90 opacity-0 backdrop-blur-sm transition-opacity duration-300 group-hover:opacity-100">
+            <span className="absolute left-3 top-3 rounded-full border border-white/25 bg-white/10 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.18em] text-white/90 backdrop-blur-sm transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-100">
               Voir l&apos;album
             </span>
           </Link>
