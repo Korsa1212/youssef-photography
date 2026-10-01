@@ -5,8 +5,8 @@ export const SITE_URL =
 export const SITE_DESCRIPTION =
   "Youssef Production — photographe et vidéaste à Marrakech. Mariage, fiançailles, événements : des souvenirs authentiques, livrés rapidement.";
 
-export const PHONE_E164 = "+212696819328";
-export const PHONE_DISPLAY = "+212 696 819 328";
+export const PHONE_E164 = "+212526051702";
+export const PHONE_DISPLAY = "+212 5 26 05 17 02";
 export const WHATSAPP_URL = "https://wa.me/212696819328";
 export const EMAIL = "contact@youssefproduction.com";
 export const INSTAGRAM_URL = "https://www.instagram.com/youssef.production";

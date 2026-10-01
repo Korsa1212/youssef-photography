@@ -119,9 +119,9 @@ First client: **Youssef**, photography business. He wants:
 
 - **Business name**: Youssef Production / Youssef Photographe
 - **Services**: Photo-Video — Mariage / Fiançailles / Events — "CRÉATEUR DE SOUVENIRS"
-- **Phone**: +212 696 819 328
+- **Phone**: +212 5 26 05 17 02
 - **Email**: contact@youssefproduction.com
-- **WhatsApp**: wa.me/212...
+- **WhatsApp**: wa.me/212696819328
 - **Location**: MARRAKECH
 - **Instagram**: @youssef.production
 - **UI preference**: light professional UI

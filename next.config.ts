@@ -18,6 +18,13 @@ const nextConfig: NextConfig = {
         pathname: "/storage/v1/object/public/**",
       },
       {
+        // Cloudflare R2 public bucket holding the wedding film. Only needed
+        // if a poster frame is ever served through next/image.
+        protocol: "https",
+        hostname: "*.r2.dev",
+        pathname: "/**",
+      },
+      {
         protocol: "https",
         hostname: "images.unsplash.com",
         pathname: "/**",
