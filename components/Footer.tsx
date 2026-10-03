@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
+import LocaleSwitcher from "./LocaleSwitcher";
+import { Link as LocaleLink } from "@/i18n/navigation";
 import {
   EMAIL,
   INSTAGRAM_URL,
@@ -39,7 +42,10 @@ const SOCIALS = [
   },
 ];
 
-export default function Footer() {
+export default async function Footer() {
+  const t = await getTranslations("footer");
+  const tn = await getTranslations("nav");
+
   return (
     <footer className="bg-zinc-950 text-zinc-400">
       <div className="mx-auto grid max-w-6xl gap-12 px-6 py-16 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr]">
@@ -49,11 +55,10 @@ export default function Footer() {
             YOUSSEF PRODUCTION
           </p>
           <p className="mt-1 text-[11px] uppercase tracking-[0.3em] text-amber-400">
-            Photographe & Vidéaste
+            {t("tagline")}
           </p>
           <p className="mt-5 max-w-sm text-[15px] leading-relaxed">
-            Créateur de souvenirs — mariage, fiançailles, événements. Des
-            images et des vidéos qui racontent de vraies histoires à Marrakech.
+            {t("blurb")}
           </p>
           <div className="mt-7 flex gap-3">
             {SOCIALS.map((s) => (
@@ -74,9 +79,20 @@ export default function Footer() {
         {/* Contact */}
         <div>
           <p className="mb-5 text-sm font-semibold uppercase tracking-[0.2em] text-white">
-            Contact
+            {t("contact")}
           </p>
           <div className="space-y-4">
+            <LocaleLink
+              href="/contact"
+              className="flex items-center gap-3 text-[15px] transition-colors hover:text-white"
+            >
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-amber-400">
+                <svg viewBox="0 0 24 24" {...iconProps}>
+                  <path d="M21 15.5a2 2 0 01-2 2H8l-4 4V5a2 2 0 012-2h13a2 2 0 012 2z" />
+                </svg>
+              </span>
+              {tn("contact")}
+            </LocaleLink>
             <a
               href={`tel:${PHONE_E164}`}
               className="flex items-center gap-3 text-[15px] transition-colors hover:text-white"
@@ -119,7 +135,7 @@ export default function Footer() {
         {/* Location */}
         <div>
           <p className="mb-5 text-sm font-semibold uppercase tracking-[0.2em] text-white">
-            Localisation
+            {t("location")}
           </p>
           <div className="space-y-4">
             <p className="flex items-start gap-3 text-[15px]">
@@ -129,7 +145,7 @@ export default function Footer() {
                   <circle cx="12" cy="10" r="3" />
                 </svg>
               </span>
-              Marrakech, Maroc
+              {t("cityLine")}
             </p>
             <p className="flex items-center gap-3 text-[15px]">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-amber-400">
@@ -138,37 +154,40 @@ export default function Footer() {
                   <path d="M12 7v5l3 3" />
                 </svg>
               </span>
-              Réponse rapide — devis gratuit sous 24h
+              {t("responseTime")}
             </p>
           </div>
         </div>
       </div>
 
       <div className="border-t border-white/10">
-        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-6 py-6 text-sm text-zinc-500 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mx-auto flex max-w-6xl flex-col gap-5 px-6 py-6 text-sm text-zinc-500 sm:flex-row sm:items-center sm:justify-between">
           <p>
-            © {new Date().getFullYear()} Youssef Production. Tous droits
-            réservés.
+            © {new Date().getFullYear()} Youssef Production. {t("rights")}
           </p>
-          <Link
-            href="/admin"
-            aria-label="Espace admin"
-            title="Espace admin"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-zinc-600 transition-colors hover:border-white/25 hover:text-zinc-300"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={1.8}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-4 w-4"
+          <div className="flex items-center gap-4">
+            <LocaleSwitcher tone="dark" />
+            {/* Admin is deliberately NOT localized, so this stays on next/link. */}
+            <Link
+              href="/admin"
+              aria-label={t("adminArea")}
+              title={t("adminArea")}
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-zinc-600 transition-colors hover:border-white/25 hover:text-zinc-300"
             >
-              <circle cx="12" cy="12" r="3" />
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-            </svg>
-          </Link>
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1.8}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-4 w-4"
+              >
+                <circle cx="12" cy="12" r="3" />
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a1.65 1.65 0 0 1-3.3 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a1.65 1.65 0 0 1 0-3.3h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a1.65 1.65 0 0 1 3.3 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a1.65 1.65 0 0 1 0 3.3h-.09a1.65 1.65 0 0 0-1.51 1z" />
+              </svg>
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

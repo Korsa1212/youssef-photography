@@ -1,0 +1,177 @@
+{
+    "nav":  {
+                "home":  "Home",
+                "portfolio":  "Portfolio",
+                "blog":  "Blog",
+                "about":  "About",
+                "faq":  "FAQ",
+                "contact":  "Contact",
+                "book":  "Book Now",
+                "menu":  "Menu",
+                "openMenu":  "Open the menu",
+                "closeMenu":  "Close the menu"
+            },
+    "lang":  {
+                 "label":  "Language",
+                 "fr":  "Français",
+                 "en":  "English",
+                 "switchTo":  "View the site in"
+             },
+    "site":  {
+                 "title":  "Youssef Production — Wedding Photographer \u0026 Videographer in Marrakech",
+                 "description":  "Youssef Production — wedding photographer and videographer in Marrakech. Weddings, engagements, events: authentic memories, delivered fast.",
+                 "ogTagline":  "Photographer \u0026 Videographer",
+                 "ogServices":  "Wedding · Engagement · Events",
+                 "ogLocation":  "in Marrakech"
+             },
+    "footer":  {
+                   "tagline":  "Photographer \u0026 Videographer",
+                   "blurb":  "Creating memories — weddings, engagements, events. Images and films that tell real stories in Marrakech.",
+                   "contact":  "Contact",
+                   "location":  "Location",
+                   "responseTime":  "Fast reply — free quote within 24h",
+                   "rights":  "All rights reserved.",
+                   "adminArea":  "Admin area",
+                   "cityLine":  "Marrakech, Morocco"
+               },
+    "common":  {
+                   "backToPortfolio":  "← Back to the portfolio",
+                   "viewPortfolio":  "View the portfolio",
+                   "readMore":  "Read more",
+                   "backHome":  "← Back to the homepage",
+                   "loading":  "Loading..."
+               },
+    "home":  {
+                 "title":  "Youssef Production — Wedding Photographer \u0026 Videographer in Marrakech",
+                 "description":  "Wedding photographer and videographer in Marrakech. Weddings, engagements and events: authentic memories, delivered fast.",
+                 "reviewsTitle":  "What my clients say",
+                 "reviewsSubtitle":  "Feedback from the couples who trusted us",
+                 "reviewsEmpty":  "No reviews published yet.",
+                 "filmTitle":  "Wedding Film",
+                 "reviewsEyebrow":  "Testimonials",
+                 "averageRating":  "Average rating",
+                 "basedOnReviews":  "Based on {count, plural, one {# verified review} other {# verified reviews}}",
+                 "leaveReviewCta":  "Leave a review",
+                 "reviewOnGoogle":  "Review on Google",
+                 "verified":  "Verified",
+                 "reviewWorkLink":  "Work — {title}",
+                 "ratingLine":  "{rating}/5 — {count, plural, one {# review} other {# reviews}}",
+                 "heroLocation":  "Marrakech, Morocco",
+                 "heroWhatsappQuote":  "Free quote on WhatsApp",
+                 "albumsPreparingTitle":  "The albums are being prepared",
+                 "albumsPreparingBody":  "In the meantime, ask us for a preview of our work on WhatsApp — we will send you our best series.",
+                 "albumsPreparingCta":  "See our photos on WhatsApp",
+                 "ctaEyebrow":  "Book now",
+                 "ctaTitle":  "Do you have a date in mind?",
+                 "ctaBody":  "Send me your date and the location of your event. You get an answer and a free quote within 24 hours, with no commitment.",
+                 "ctaPointResponse":  "Reply within 24 h",
+                 "ctaPointFree":  "100 % free quote",
+                 "ctaPointNoCommitment":  "No commitment",
+                 "ctaWhatsappCta":  "Check my availability",
+                 "filmEyebrow":  "Video",
+                 "filmSubtitle":  "A preview of our most recent work, in motion and in music.",
+                 "quoteCta":  "Request a quote",
+                 "areaServed":  "Marrakech and surroundings, Morocco"
+             },
+    "portfolio":  {
+                      "title":  "Portfolio",
+                      "description":  "Weddings, engagements and events photographed and filmed in Marrakech by Youssef Production.",
+                      "empty":  "No work published yet.",
+                      "heading":  "My work",
+                      "all":  "All",
+                      "albumCount":  "{count, plural, one {# album} other {# albums}}",
+                      "photoCount":  "{count, plural, one {# photo} other {# photos}}",
+                      "emptyCategory":  "No work in this category yet.",
+                      "noPhoto":  "No photo",
+                      "viewAlbum":  "View album",
+                      "reviewsTitle":  "Client reviews",
+                      "reviewsEmpty":  "No reviews published yet. Be the first to leave one!",
+                      "leaveReview":  "Leave a review",
+                      "leaveReviewHint":  "Your review helps other clients trust Youssef.",
+                      "notFound":  "Work not found"
+                  },
+    "about":  {
+                  "title":  "About",
+                  "description":  "Discover Youssef Production, photographer and videographer in Marrakech: a story of passion, an honest eye and images that stand the test of time."
+              },
+    "faq":  {
+                "title":  "FAQ — pricing, delivery times \u0026 booking",
+                "description":  "Frequently asked questions about Youssef Production, photographer in Marrakech: pricing, services, delivery times and booking.",
+                "heading":  "Frequently asked questions",
+                "subtitle":  "Answers to the questions clients ask most before booking.",
+                "empty":  "The FAQ is coming soon.",
+                "ctaTitle":  "Another question?",
+                "ctaBody":  "Message me directly on WhatsApp — I reply quickly.",
+                "ctaButton":  "Ask my question",
+                "discoverPortfolio":  "Discover the portfolio →"
+            },
+    "blog":  {
+                 "title":  "Blog",
+                 "description":  "Practical guides to prepare your Marrakech wedding: suppliers, the small details, timelines and photographer tips.",
+                 "empty":  "No articles published yet."
+             },
+    "contact":  {
+                    "title":  "Contact",
+                    "description":  "Tell me about your event. I reply personally within 24 hours with a free quote, no commitment.",
+                    "name":  "Full name",
+                    "namePlaceholder":  "e.g. Salma Benali",
+                    "email":  "Email",
+                    "emailPlaceholder":  "you@example.com",
+                    "phone":  "Phone",
+                    "phonePlaceholder":  "e.g. +212 6 12 34 56 78",
+                    "eventType":  "Type of event",
+                    "eventDate":  "Event date",
+                    "eventDateHint":  "Optional",
+                    "location":  "Where I am based",
+                    "locationPlaceholder":  "e.g. Riad, Marrakech",
+                    "message":  "Your message",
+                    "messagePlaceholder":  "Tell me about your event, the schedule, and what matters most to you...",
+                    "optional":  "optional",
+                    "submit":  "Send my message",
+                    "sending":  "Sending...",
+                    "successTitle":  "Thank you!",
+                    "successBody":  "Your message has been sent. I reply personally within 24 hours.",
+                    "successCta":  "Back to the homepage",
+                    "errorTitle":  "Something went wrong",
+                    "errorBody":  "Your message could not be sent. Please try again, or reach me directly on WhatsApp.",
+                    "whatsappCta":  "Message me on WhatsApp",
+                    "privacyNote":  "Your details are used only to answer your request. They are never shared or sold.",
+                    "directTitle":  "Prefer to talk right away?",
+                    "directBody":  "WhatsApp is the fastest way to reach me — usually answered within a few hours.",
+                    "eventTypes":  {
+                                       "wedding":  "Wedding",
+                                       "engagement":  "Engagement",
+                                       "event":  "Event",
+                                       "other":  "Other"
+                                   },
+                    "eventTypePlaceholder":  "Choose…",
+                    "chooseType":  "Select a type",
+                    "error":  {
+                                  "name":  {
+                                               "required":  "Please enter your name.",
+                                               "invalid":  "That name is too long."
+                                           },
+                                  "email":  {
+                                                "required":  "Please enter your email address.",
+                                                "invalid":  "That email address is invalid."
+                                            },
+                                  "phone":  {
+                                                "required":  "Please enter your phone number.",
+                                                "invalid":  "That phone number is invalid."
+                                            },
+                                  "event_date":  {
+                                                     "invalid":  "That date is invalid."
+                                                 },
+                                  "message":  {
+                                                  "required":  "Tell me a little about your project (10 characters minimum).",
+                                                  "invalid":  "That message is too long (4000 characters maximum)."
+                                              }
+                              },
+                    "heading":  "Let us talk about your project"
+                },
+    "notFound":  {
+                     "label":  "Error 404",
+                     "title":  "Oops, page not found",
+                     "body":  "The page you are looking for no longer exists, or never did. Let\u0027s get you back to the good stuff."
+                 }
+}

@@ -1,43 +1,72 @@
-import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
-import { getPublishedPosts } from "@/lib/supabase/queries";
-
-export const metadata: Metadata = {
-  title: "Blog & guides photo — conseils mariage & fiançailles",
-  description:
-    "Guides pratiques, idées d'organisation et conseils photo de Youssef Production, photographe à Marrakech : mariage, fiançailles, événements.",
-  alternates: { canonical: "/blog" },
-  openGraph: {
-    title: "Blog & guides photo — Youssef Production",
-    description:
-      "Conseils pratiques pour réussir vos photos de mariage et fiançailles à Marrakech.",
-    url: "/blog",
-  },
-};
+import { notFound } from "next/navigation";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
+import { isLocale, locales, type Locale } from "@/i18n/routing";
+import { localeAlternates } from "@/i18n/metadata";
+import {
+  getPublishedPosts,
+  getLocalizedPost,
+  formatDate,
+} from "@/lib/supabase/queries";
 
 export const revalidate = 300;
 
-export default async function BlogPage() {
-  const posts = await getPublishedPosts();
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const safe: Locale = isLocale(locale) ? locale : "fr";
+  const isEn = safe === "en";
+
+  return {
+    title: isEn
+      ? "Blog & photo guides — wedding & engagement advice"
+      : "Blog & guides photo — conseils mariage & fiançailles",
+    description: isEn
+      ? "Practical guides, planning tips and photography advice from Youssef Production, photographer in Marrakech: weddings, engagements, events."
+      : "Guides pratiques, idées d'organisation et conseils photo de Youssef Production, photographe à Marrakech : mariage, fiançailles, événements.",
+    alternates: localeAlternates(safe, "/blog"),
+  };
+}
+
+export default async function BlogPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  if (!isLocale(locale)) notFound();
+  setRequestLocale(locale);
+
+  const t = await getTranslations("blog");
+  const rawPosts = await getPublishedPosts();
+  const posts = rawPosts.map((p) => getLocalizedPost(p, locale));
+
+  const isEn = locale === "en";
 
   return (
     <div className="bg-white px-6 py-20">
       <div className="mx-auto max-w-5xl">
         <p className="text-center text-xs uppercase tracking-[0.35em] text-zinc-400">
-          Blog
+          {t("title")}
         </p>
         <h1 className="mt-4 text-center font-display text-4xl font-semibold text-zinc-900 sm:text-5xl">
-          Guides & conseils photo
+          {isEn ? "Photo Guides & Advice" : "Guides & conseils photo"}
         </h1>
         <p className="mx-auto mt-4 max-w-lg text-center text-lg text-zinc-500">
-          Conseils pratiques, idées de lieux et réponses à vos questions sur la
-          photo de mariage, de fiançailles et d&apos;événement à Marrakech.
+          {t("description")}
         </p>
 
         {posts.length === 0 ? (
           <p className="mt-16 rounded-2xl border border-zinc-100 p-10 text-center text-zinc-400">
-            Les articles arrivent bientôt.
+            {t("empty")}
           </p>
         ) : (
           <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -64,11 +93,7 @@ export default async function BlogPage() {
                 </div>
                 <div className="p-6">
                   <p className="text-xs uppercase tracking-[0.2em] text-zinc-400">
-                    {new Date(post.created_at).toLocaleDateString("fr-FR", {
-                      day: "numeric",
-                      month: "long",
-                      year: "numeric",
-                    })}
+                    {formatDate(post.created_at, locale as Locale)}
                   </p>
                   <h2 className="mt-2 text-xl font-medium leading-snug text-zinc-900">
                     {post.title}

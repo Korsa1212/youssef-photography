@@ -1,24 +1,39 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import { getPublishedFaqs } from "@/lib/supabase/queries";
-
-export const metadata: Metadata = {
-  title: "FAQ — tarifs, délais & réservation",
-  description:
-    "Questions fréquentes sur Youssef Production, photographe à Marrakech : tarifs, prestations, délais de livraison et réservation.",
-  alternates: { canonical: "/faq" },
-  openGraph: {
-    title: "FAQ — Youssef Production",
-    description:
-      "Tarifs, prestations, délais de livraison et réservation : les réponses à vos questions.",
-    url: "/faq",
-  },
-};
+import { notFound } from "next/navigation";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
+import { isLocale, locales, type Locale } from "@/i18n/routing";
+import { localeMetadata } from "@/i18n/metadata";
+import { getPublishedFaqs, getLocalizedFaq } from "@/lib/supabase/queries";
+import { WHATSAPP_URL } from "@/lib/seo";
 
 export const revalidate = 300;
 
-export default async function FaqPage() {
-  const faqs = await getPublishedFaqs();
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const safe: Locale = isLocale(locale) ? locale : "fr";
+  return localeMetadata(safe, "faq", "/faq");
+}
+
+export default async function FaqPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  if (!isLocale(locale)) notFound();
+  setRequestLocale(locale);
+
+  const t = await getTranslations("faq");
+  const rawFaqs = await getPublishedFaqs();
+  const faqs = rawFaqs.map((f) => getLocalizedFaq(f, locale));
 
   const faqLd =
     faqs.length > 0
@@ -46,15 +61,15 @@ export default async function FaqPage() {
           FAQ
         </p>
         <h1 className="mt-4 text-center font-display text-4xl font-semibold text-zinc-900 sm:text-5xl">
-          Questions fréquentes
+          {t("heading")}
         </h1>
         <p className="mx-auto mt-4 max-w-md text-center text-lg text-zinc-500">
-          Réponses aux questions les plus posées avant une réservation.
+          {t("subtitle")}
         </p>
 
         {faqs.length === 0 ? (
           <p className="mt-16 rounded-2xl border border-zinc-100 p-10 text-center text-zinc-400">
-            Les FAQ arrivent bientôt.
+            {t("empty")}
           </p>
         ) : (
           <div className="mt-12 space-y-4">
@@ -79,18 +94,16 @@ export default async function FaqPage() {
 
         <div className="mt-16 rounded-2xl bg-zinc-900 p-10 text-center">
           <h2 className="font-display text-2xl font-semibold text-white">
-            Une autre question ?
+            {t("ctaTitle")}
           </h2>
-          <p className="mt-3 text-white/80">
-            Écrivez-moi directement sur WhatsApp, je réponds rapidement.
-          </p>
+          <p className="mt-3 text-white/80">{t("ctaBody")}</p>
           <a
-            href="https://wa.me/212696819328"
+            href={WHATSAPP_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="mt-6 inline-block rounded-full bg-white px-7 py-3 font-medium text-zinc-900 transition-colors hover:bg-zinc-200"
           >
-            Poser ma question
+            {t("ctaButton")}
           </a>
         </div>
 
@@ -99,7 +112,7 @@ export default async function FaqPage() {
             href="/portfolio"
             className="text-sm text-zinc-400 transition-colors hover:text-zinc-900"
           >
-            Découvrir le portfolio →
+            {t("discoverPortfolio")}
           </Link>
         </div>
       </div>

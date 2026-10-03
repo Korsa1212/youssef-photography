@@ -5,12 +5,16 @@ import Image from "next/image";
 import type { FilmSource } from "@/lib/seo";
 
 export default function WeddingFilm({
+  eyebrow,
   title,
+  subtitle,
   poster,
   source,
   orientation = "landscape",
 }: {
+  eyebrow: string;
   title: string;
+  subtitle: string;
   poster: string | null;
   source: FilmSource;
   /** Matches the player box to the footage so vertical reels are not pillarboxed. */
@@ -30,13 +34,13 @@ export default function WeddingFilm({
       <div className="relative mx-auto max-w-6xl">
         <div className="text-center">
           <p className="text-xs font-medium uppercase tracking-[0.3em] text-amber-400">
-            Vidéo
+            {eyebrow}
           </p>
           <h2 className="mt-3 font-display text-3xl font-semibold text-white sm:text-5xl">
             {title}
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-lg text-white/60">
-            Un aperçu de notre travail le plus récent, en mouvement et en musique.
+            {subtitle}
           </p>
         </div>
 

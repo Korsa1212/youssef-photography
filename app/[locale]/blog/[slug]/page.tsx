@@ -1,29 +1,50 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import { setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
+import { isLocale, locales, type Locale } from "@/i18n/routing";
+import { localeAlternates } from "@/i18n/metadata";
 import { absoluteUrl } from "@/lib/seo";
-import { getPostBySlug } from "@/lib/supabase/queries";
+import {
+  getPostBySlug,
+  getPublishedPosts,
+  getLocalizedPost,
+  formatDate,
+} from "@/lib/supabase/queries";
 
 export const revalidate = 300;
+
+export async function generateStaticParams() {
+  const posts = await getPublishedPosts();
+  return locales.flatMap((locale) =>
+    posts.map((post) => ({
+      locale,
+      slug: locale === "en" && post.slug_en ? post.slug_en : post.slug,
+    }))
+  );
+}
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
-  const post = await getPostBySlug(slug);
-  if (!post) return { title: "Article introuvable" };
+  const { locale, slug } = await params;
+  const safe: Locale = isLocale(locale) ? locale : "fr";
+  const rawPost = await getPostBySlug(slug);
+  if (!rawPost) return { title: safe === "en" ? "Article not found" : "Article introuvable" };
+  const post = getLocalizedPost(rawPost, safe);
+
   return {
     title: post.title,
     description: post.excerpt ?? undefined,
-    alternates: { canonical: `/blog/${post.slug}` },
+    alternates: localeAlternates(safe, `/blog/${post.slug}`),
     openGraph: {
       type: "article",
       title: `${post.title} — Youssef Production`,
       description: post.excerpt ?? undefined,
-      url: `/blog/${post.slug}`,
+      url: absoluteUrl(`/${safe}/blog/${post.slug}`),
       publishedTime: post.created_at,
       images: post.cover_image
         ? [{ url: absoluteUrl(post.cover_image), alt: post.title }]
@@ -35,11 +56,17 @@ export async function generateMetadata({
 export default async function PostPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 }) {
-  const { slug } = await params;
-  const post = await getPostBySlug(slug);
-  if (!post) notFound();
+  const { locale, slug } = await params;
+  if (!isLocale(locale)) notFound();
+  setRequestLocale(locale);
+
+  const rawPost = await getPostBySlug(slug);
+  if (!rawPost) notFound();
+  const post = getLocalizedPost(rawPost, locale);
+
+  const isEn = locale === "en";
 
   const paragraphs = post.content
     .split(/\n\s*\n/)
@@ -74,15 +101,11 @@ export default async function PostPage({
           href="/blog"
           className="text-sm text-zinc-400 transition-colors hover:text-zinc-900"
         >
-          ← Retour au blog
+          {isEn ? "← Back to blog" : "← Retour au blog"}
         </Link>
 
         <p className="mt-8 text-xs uppercase tracking-[0.25em] text-zinc-400">
-          {new Date(post.created_at).toLocaleDateString("fr-FR", {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-          })}
+          {formatDate(post.created_at, locale as Locale)}
         </p>
         <h1 className="mt-3 font-display text-4xl font-semibold leading-tight text-zinc-900 sm:text-5xl">
           {post.title}
@@ -109,10 +132,12 @@ export default async function PostPage({
 
         <div className="mt-14 rounded-2xl bg-zinc-900 p-10 text-center">
           <h2 className="font-display text-2xl font-semibold text-white">
-            Prêt à créer vos souvenirs ?
+            {isEn ? "Ready to create your memories?" : "Prêt à créer vos souvenirs ?"}
           </h2>
           <p className="mt-3 text-white/80">
-            Réservez votre séance ou votre reportage sur WhatsApp.
+            {isEn
+              ? "Book your session or wedding coverage on WhatsApp."
+              : "Réservez votre séance ou votre reportage sur WhatsApp."}
           </p>
           <a
             href="https://wa.me/212696819328"
@@ -120,7 +145,7 @@ export default async function PostPage({
             rel="noopener noreferrer"
             className="mt-6 inline-block rounded-full bg-white px-7 py-3 font-medium text-zinc-900 transition-colors hover:bg-zinc-200"
           >
-            Réserver
+            {isEn ? "Book on WhatsApp" : "Réserver via WhatsApp"}
           </a>
         </div>
 
@@ -129,7 +154,7 @@ export default async function PostPage({
             href="/portfolio"
             className="text-sm text-zinc-400 transition-colors hover:text-zinc-900"
           >
-            Voir mes réalisations →
+            {isEn ? "View my portfolio →" : "Voir mes réalisations →"}
           </Link>
         </div>
       </div>

@@ -2,12 +2,11 @@
 import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { getTranslations } from "next-intl/server";
+import { isLocale, type Locale } from "@/i18n/routing";
 
-export const alt = "Youssef Production — Photographe & Vidéaste à Marrakech";
-export const size = {
-  width: 1200,
-  height: 630,
-};
+export const alt = "Youssef Production — Photographer & Videographer in Marrakech";
+export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 const marcellus = await readFile(join(process.cwd(), "assets/Marcellus.ttf"));
@@ -17,7 +16,22 @@ const marcellus = await readFile(join(process.cwd(), "assets/Marcellus.ttf"));
 const logo = await readFile(join(process.cwd(), "public/youssef-logo.png"));
 const logoDataUri = `data:image/png;base64,${logo.toString("base64")}`;
 
-export default async function OpengraphImage() {
+/**
+ * Localized OG image.
+ *
+ * Lives inside `app/[locale]/` so it renders one image per language: sharing
+ * the French card on `/en` pages would advertise French to English visitors in
+ * the link preview.
+ */
+export default async function OpengraphImage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const safe: Locale = isLocale(locale) ? locale : "fr";
+  const t = await getTranslations({ locale: safe, namespace: "site" });
+
   return new ImageResponse(
     (
       <div
@@ -74,7 +88,7 @@ export default async function OpengraphImage() {
             textAlign: "center",
           }}
         >
-          Photographe &amp; Vidéaste
+          {t("ogTagline")}
         </div>
         <div
           style={{
@@ -85,7 +99,7 @@ export default async function OpengraphImage() {
             textAlign: "center",
           }}
         >
-          Mariage · Fiançailles · Événements
+          {t("ogServices")}
         </div>
         <div
           style={{
@@ -96,7 +110,7 @@ export default async function OpengraphImage() {
             textAlign: "center",
           }}
         >
-          à Marrakech
+          {t("ogLocation")}
         </div>
       </div>
     ),

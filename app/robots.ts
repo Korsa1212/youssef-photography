@@ -7,9 +7,13 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin", "/admin/login", "/api/"],
+        // `/admin` is unlocalized, so a single rule covers every locale.
+        // `/en/blog` 404s on purpose; disallowing it keeps crawlers from
+        // logging a soft-404 on a URL that will never exist.
+        disallow: ["/admin", "/admin/", "/api/", "/en/blog"],
       },
     ],
+    host: SITE_URL,
     sitemap: `${SITE_URL}/sitemap.xml`,
   };
 }

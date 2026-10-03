@@ -1,6 +1,8 @@
 import Image from "next/image";
-import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
 import Stars from "./Stars";
+import { Link } from "@/i18n/navigation";
+import { getLocalizedCategory } from "@/lib/categories";
 import type { Work } from "@/lib/supabase/queries";
 
 /**
@@ -98,6 +100,9 @@ export default function BentoGrid({
   ratings?: Record<string, number>;
   className?: string;
 }) {
+  const t = useTranslations("portfolio");
+  const locale = useLocale();
+
   if (works.length === 0) return null;
 
   const spans = buildSpans(works.length);
@@ -112,6 +117,10 @@ export default function BentoGrid({
         const rating = ratings?.[work.id];
         const photoCount = work.image_urls.length;
 
+        const title =
+          locale === "en" && work.title_en?.trim() ? work.title_en.trim() : work.title;
+        const category = getLocalizedCategory(work.category, locale);
+
         return (
           <Link
             key={work.id}
@@ -121,7 +130,7 @@ export default function BentoGrid({
             {image ? (
               <Image
                 src={image}
-                alt={work.title}
+                alt={title}
                 fill
                 sizes={
                   cols === 4
@@ -134,28 +143,38 @@ export default function BentoGrid({
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center text-sm text-zinc-500">
-                Aucune photo
+                {t("noPhoto")}
               </div>
             )}
 
             <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-black/25 opacity-95 transition-opacity duration-500 md:opacity-80 md:group-hover:opacity-95" />
 
-            {photoCount > 0 && (
-              <span className="absolute right-3 top-3 flex items-center gap-1.5 rounded-full bg-black/40 px-2.5 py-1 text-[11px] font-medium text-white/90 backdrop-blur-sm">
-                <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-                  <path d="M3 7h3l2-2h4l2 2h9a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7z" />
-                  <circle cx="12" cy="13" r="3.5" />
-                </svg>
-                {photoCount}
-              </span>
-            )}
+            <div className="absolute right-3 top-3 z-10 flex items-center gap-2">
+              {work.video_url && (
+                <span className="flex items-center gap-1.5 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-950 shadow-md shadow-amber-500/30 backdrop-blur-md">
+                  <svg viewBox="0 0 24 24" className="h-2.5 w-2.5 fill-current" aria-hidden>
+                    <polygon points="6 4 18 12 6 20 6 4" />
+                  </svg>
+                  <span>Film</span>
+                </span>
+              )}
+              {photoCount > 0 && (
+                <span className="flex items-center gap-1.5 rounded-full bg-black/50 px-2.5 py-1 text-[11px] font-medium text-white/90 backdrop-blur-sm">
+                  <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                    <path d="M3 7h3l2-2h4l2 2h9a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7z" />
+                    <circle cx="12" cy="13" r="3.5" />
+                  </svg>
+                  {photoCount}
+                </span>
+              )}
+            </div>
 
             <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
               <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-amber-300/90 sm:text-[11px]">
-                {work.category}
+                {category}
               </p>
               <h3 className="mt-1 font-display text-lg font-semibold leading-tight text-white sm:text-xl">
-                {work.title}
+                {title}
               </h3>
               {work.location && (
                 <p className="mt-1 truncate text-xs text-white/60">
@@ -173,7 +192,7 @@ export default function BentoGrid({
             </div>
 
             <span className="absolute left-3 top-3 rounded-full border border-white/25 bg-white/10 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.18em] text-white/90 backdrop-blur-sm transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-100">
-              Voir l&apos;album
+              {t("viewAlbum")}
             </span>
           </Link>
         );
